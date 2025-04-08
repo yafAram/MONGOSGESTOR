@@ -201,16 +201,15 @@ namespace WebApplication1.Services
         {
             try
             {
-                // Se realiza el backup completo (mongodump) en la carpeta indicada.
+                var backupPath = Path.Combine(backupFolder, DateTime.Now.ToString("yyyy-MM-dd"));
+
+                // Usar mongodump sin Docker
                 var processInfo = new ProcessStartInfo
                 {
-                    FileName = "docker",
-                    Arguments = $"exec mongodb mongodump " +
+                    FileName = "mongodump",
+                    Arguments = $"--uri=mongodb://admin:AdminPassword123@mongodb:27017/admin " +
                                 $"--db {databaseName} " +
-                                $"--authenticationDatabase admin " +
-                                $"-u admin " +
-                                $"-p AdminPassword123 " +
-                                $"--out {backupFolder}",
+                                $"--out {backupPath}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -231,7 +230,7 @@ namespace WebApplication1.Services
                     throw new Exception($"Error en exportación: {error}");
                 }
 
-                _logger.LogInformation("Backup de {Database} creado en: {Folder}", databaseName, backupFolder);
+                _logger.LogInformation("Backup de {Database} creado en: {Folder}", databaseName, backupPath);
             }
             catch (Exception ex)
             {

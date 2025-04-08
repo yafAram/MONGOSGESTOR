@@ -45,7 +45,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - dataprotection_keys:/root/.aspnet/DataProtection-Keys
       - ./backups:/app/backups
     depends_on:
       - mongodb
@@ -62,3 +62,4 @@ networks:
 volumes:
   mongodb_data:
   mongodb_backup:
+  dataprotection_keys:
