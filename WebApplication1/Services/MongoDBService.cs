@@ -197,21 +197,20 @@ namespace WebApplication1.Services
         }
 
 
-        public async Task ExportCollectionAsync(string databaseName, string collectionName, string exportPath)
+        public async Task ExportDatabaseAsync(string databaseName, string backupFolder)
         {
             try
             {
+                // Se realiza el backup completo (mongodump) en la carpeta indicada.
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "docker",
-                    Arguments = $"exec mongodb mongoexport " +
+                    Arguments = $"exec mongodb mongodump " +
                                 $"--db {databaseName} " +
-                                $"--collection {collectionName} " +
                                 $"--authenticationDatabase admin " +
                                 $"-u admin " +
-                                $"-p adminpassword " +
-                                $"--out {exportPath} " +
-                                $"--jsonArray",
+                                $"-p AdminPassword123 " +
+                                $"--out {backupFolder}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -223,6 +222,7 @@ namespace WebApplication1.Services
 
                 var output = await process.StandardOutput.ReadToEndAsync();
                 var error = await process.StandardError.ReadToEndAsync();
+
                 await process.WaitForExitAsync();
 
                 if (process.ExitCode != 0)
@@ -231,30 +231,30 @@ namespace WebApplication1.Services
                     throw new Exception($"Error en exportación: {error}");
                 }
 
-                _logger.LogInformation("Colección exportada a: {ExportPath}", exportPath);
+                _logger.LogInformation("Backup de {Database} creado en: {Folder}", databaseName, backupFolder);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al exportar colección");
+                _logger.LogError(ex, "Error al exportar base de datos");
                 throw;
             }
         }
 
-        public async Task ImportCollectionAsync(string databaseName, string collectionName, string filePath)
+        public async Task RestoreDatabaseAsync(string databaseName, string backupFolder)
         {
+            // Aseguramos que la ruta use barras '/' (Linux)
+            backupFolder = backupFolder.Replace("\\", "/");
             try
             {
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "docker",
-                    Arguments = $"exec -i mongodb mongoimport " +
-                                $"--db {databaseName} " +
-                                $"--collection {collectionName} " +
+                    Arguments = $"exec mongodb mongorestore " +
                                 $"--authenticationDatabase admin " +
+                                $"--authenticationMechanism SCRAM-SHA-1 " +
                                 $"-u admin " +
-                                $"-p adminpassword " +
-                                $"--file {filePath} " +
-                                $"--jsonArray --drop",
+                                $"-p AdminPassword123 " +
+                                $"--drop --nsInclude={databaseName}.* {backupFolder}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -266,22 +266,24 @@ namespace WebApplication1.Services
 
                 var output = await process.StandardOutput.ReadToEndAsync();
                 var error = await process.StandardError.ReadToEndAsync();
+
                 await process.WaitForExitAsync();
 
                 if (process.ExitCode != 0)
                 {
-                    _logger.LogError("Error en importación: {Error}", error);
-                    throw new Exception($"Error en importación: {error}");
+                    _logger.LogError("Error en restauración: {Error}", error);
+                    throw new Exception($"Error en restauración: {error}");
                 }
 
-                _logger.LogInformation("Colección importada desde: {FilePath}", filePath);
+                _logger.LogInformation("Backup de {Database} restaurado desde: {Folder}", databaseName, backupFolder);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al importar colección");
+                _logger.LogError(ex, "Error al restaurar backup");
                 throw;
             }
         }
+
 
 
 

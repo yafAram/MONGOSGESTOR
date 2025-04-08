@@ -54,33 +54,7 @@
                 <!-- EXPORTAR -->
                 <div class="col-md-6">
                     <h5>Exportar colección</h5>
-                    <form asp-action="Export" method="post">
-                        <div class="form-group">
-                            <label>Base de Datos:</label>
-                            <select id="databaseSelect" name="database" class="form-control" required>
-                                <option value="">Seleccione una base de datos</option>
-                                @foreach (var db in Model)
-                                {
-                                    <option value="@db">@db</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Colección:</label>
-                            <select id="collectionSelect" name="collection" class="form-control" required disabled>
-                                <option value="">Seleccione primero una base de datos</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary mt-2">Exportar</button>
-                    </form>
-                </div>
-
-                <!-- IMPORTAR -->
-                <div class="col-md-6">
-                    <h5>Importar colección</h5>
-                    <form asp-action="Import" method="post" enctype="multipart/form-data">
+                    <form asp-controller="ExportImport" asp-action="Export" method="post">
                         <div class="form-group">
                             <label>Base de Datos:</label>
                             <select name="database" class="form-control" required>
@@ -91,18 +65,29 @@
                                 }
                             </select>
                         </div>
+                        <button type="submit" class="btn btn-primary mt-2">Exportar Backup</button>
+                    </form>
+                </div>
 
+                <!-- IMPORTAR -->
+                <div class="col-md-6">
+                    <h5>Importar Backup</h5>
+                    <form asp-controller="ExportImport" asp-action="Import" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label>Nombre de Colección:</label>
-                            <input type="text" name="collection" class="form-control" required placeholder="Nombre de la colección destino" />
+                            <label>Base de Datos:</label>
+                            <select name="database" class="form-control" required>
+                                <option value="">Seleccione una base de datos</option>
+                                @foreach (var db in Model)
+                                {
+                                    <option value="@db">@db</option>
+                                }
+                            </select>
                         </div>
-
                         <div class="form-group">
-                            <label>Archivo JSON:</label>
-                            <input type="file" name="file" class="form-control-file" accept=".json" required />
+                            <label>Archivo ZIP:</label>
+                            <input type="file" name="file" class="form-control-file" accept=".zip" required />
                         </div>
-
-                        <button type="submit" class="btn btn-success mt-2">Importar</button>
+                        <button type="submit" class="btn btn-success mt-2">Importar Backup</button>
                     </form>
                 </div>
             </div>
