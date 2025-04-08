@@ -203,13 +203,14 @@ namespace WebApplication1.Services
             {
                 var backupPath = Path.Combine(backupFolder, DateTime.Now.ToString("yyyy-MM-dd"));
 
-                // Usar mongodump sin Docker
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "mongodump",
-                    Arguments = $"--uri=mongodb://admin:AdminPassword123@mongodb:27017/admin " +
-                                $"--db {databaseName} " +
-                                $"--out {backupPath}",
+                    // Conexión genérica + parámetros específicos
+                    Arguments = $"--uri=mongodb://admin:AdminPassword123@mongodb:27017/ " +  // Sin base de datos en la URI
+                                $"--authenticationDatabase=admin " +  // Autenticación contra 'admin'
+                                $"--db={databaseName} " +  // Usar = para parámetros
+                                $"--out={backupPath}",    // Usar = para parámetros
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
