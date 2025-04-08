@@ -13,15 +13,14 @@ services:
       - mongodb_data:/data/db
       - mongodb_backup:/data/backup
     networks:
-      custom_network:
-        ipv4_address: 192.168.1.20
+      - mongo_network  # Conecta solo a la red de MongoDB
 
   mongobackup:
     image: tiredofit/db-backup
     container_name: mongobackup
     environment:
       - DB_TYPE=mongo
-      - DB_HOST=mongodb
+      - DB_HOST=mongodb  # Usa el nombre del servicio, no la IP
       - DB_NAME=admin
       - DB_USER=admin
       - DB_PASS=AdminPassword123
@@ -33,7 +32,7 @@ services:
     depends_on:
       - mongodb
     networks:
-      - custom_network
+      - mongo_network
 
   webapplication:
     build:
@@ -51,14 +50,14 @@ services:
     depends_on:
       - mongodb
     networks:
-      - custom_network
+      - mongo_network
 
 networks:
-  custom_network:
+  mongo_network:  # Nueva red con subred diferente
     driver: bridge
     ipam:
       config:
-        - subnet: 192.168.1.0/24
+        - subnet: 172.28.0.0/16  # Subred única para Docker
 
 volumes:
   mongodb_data:
