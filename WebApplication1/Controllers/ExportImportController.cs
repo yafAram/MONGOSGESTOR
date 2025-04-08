@@ -31,21 +31,28 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Export(string database)
         {
-            // Se crea la carpeta para el backup (en la ruta montada en el volumen /backup)
-            var backupFolder = $"/backup/{database}";
-            Directory.CreateDirectory(backupFolder);
+            try
+            {
+                // Ruta corregida: usar /app/backups (dentro del contenedor webapplication)
+                var backupFolder = Path.Combine("/app/backups", database);
+                Directory.CreateDirectory(backupFolder);
 
-            // Se exporta la base de datos completa
-            await _mongoService.ExportDatabaseAsync(database, backupFolder);
+                await _mongoService.ExportDatabaseAsync(database, backupFolder);
 
-            // Se crea un archivo ZIP a partir de la carpeta de backup
-            var zipPath = $"/backup/{database}.zip";
-            if (System.IO.File.Exists(zipPath))
-                System.IO.File.Delete(zipPath);
+                // Crear ZIP en /app/backups (no en /backup)
+                var zipPath = Path.Combine("/app/backups", $"{database}-backup.zip");
+                if (System.IO.File.Exists(zipPath))
+                    System.IO.File.Delete(zipPath);
 
-            ZipFile.CreateFromDirectory(backupFolder, zipPath);
+                ZipFile.CreateFromDirectory(backupFolder, zipPath);
 
-            return PhysicalFile(zipPath, "application/zip", $"{database}.zip");
+                // Descargar el ZIP
+                return PhysicalFile(zipPath, "application/zip", $"{database}.zip");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
         }
 
 
@@ -53,35 +60,43 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> Import(string database, IFormFile file)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No se ha seleccionado archivo");
-
-            // Define la carpeta base para la importación dentro de /backup (volumen compartido)
-            var importFolder = "/backup/imports";
-            Directory.CreateDirectory(importFolder);
-
-            // Guarda el archivo ZIP en la carpeta de importación
-            var filePath = Path.Combine(importFolder, file.FileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            try
             {
-                await file.CopyToAsync(stream);
+                if (file == null || file.Length == 0)
+                    return BadRequest("No se ha seleccionado archivo");
+
+                // Usar la misma ruta que en Export (/app/backups)
+                var importBaseFolder = "/app/backups/imports";
+                Directory.CreateDirectory(importBaseFolder);
+
+                // Guardar el archivo ZIP en /app/backups/imports
+                var filePath = Path.Combine(importBaseFolder, file.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Carpeta para extraer el ZIP (ej: /app/backups/imports/midb-2023)
+                var extractFolder = Path.Combine(importBaseFolder, Path.GetFileNameWithoutExtension(file.FileName));
+
+                // Limpiar carpeta si existe
+                if (Directory.Exists(extractFolder))
+                    Directory.Delete(extractFolder, recursive: true);
+                Directory.CreateDirectory(extractFolder);
+
+                // Extraer el ZIP
+                ZipFile.ExtractToDirectory(filePath, extractFolder);
+
+                // Restaurar usando mongorestore
+                await _mongoService.RestoreDatabaseAsync(database, extractFolder);
+
+                return RedirectToAction("Index");
             }
-
-            // Define la carpeta a la que se extraerá el contenido del ZIP
-            var extractFolder = Path.Combine(importFolder, Path.GetFileNameWithoutExtension(file.FileName));
-            if (Directory.Exists(extractFolder))
-                Directory.Delete(extractFolder, true);
-            Directory.CreateDirectory(extractFolder);
-
-            // Extrae el ZIP a la carpeta (usando rutas de Linux)
-            ZipFile.ExtractToDirectory(filePath, extractFolder);
-
-            // Asegura que la ruta extraída use '/' (aunque en Linux ya lo hace, lo forzamos por seguridad)
-            extractFolder = extractFolder.Replace("\\", "/");
-
-            // Restaura el backup completo usando la carpeta extraída
-            await _mongoService.RestoreDatabaseAsync(database, extractFolder);
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                // Loggear el error (ex.Message)
+                return StatusCode(500, $"Error al importar: {ex.Message}");
+            }
         }
 
 

@@ -46,7 +46,7 @@ services:
       - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - mongodb_backup:/backup
+      - ./backups:/app/backups
     depends_on:
       - mongodb
     networks:
