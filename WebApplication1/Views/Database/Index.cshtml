@@ -1,0 +1,75 @@
+﻿@model List<string>
+@{
+    ViewData["Title"] = "Administración de Bases de Datos";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <!-- Listado de Bases de Datos -->
+    <div class="card mt-3">
+        <div class="card-header bg-primary text-white">
+            <h4>Bases de Datos Existentes</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                @foreach (var db in Model)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @db
+                        <div>
+                            <a href="/Security/Users?database=@db" class="btn btn-sm btn-info">Usuarios</a>
+                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Crear nueva base de datos -->
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <h4>Nueva Base de Datos</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateDatabase">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="databaseName"
+                           placeholder="Nombre de la base de datos" required>
+                    <button type="submit" class="btn btn-success">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gestión de Backups -->
+    <div class="card mt-4">
+        <div class="card-header bg-warning">
+            <h4>Gestión de Backups</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Crear Backup</h5>
+                    <form asp-action="CreateBackup">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="databaseName"
+                                   placeholder="Nombre de la base de datos" required>
+                            <button type="submit" class="btn btn-dark">Generar</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h5>Restaurar Backup</h5>
+                    <form asp-action="RestoreBackup" method="post" enctype="multipart/form-data">
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="backupFile" required>
+                            <button type="submit" class="btn btn-secondary">Restaurar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

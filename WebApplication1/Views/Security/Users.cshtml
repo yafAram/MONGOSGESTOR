@@ -1,0 +1,77 @@
+﻿@model List<MongoDB.Bson.BsonDocument>
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <!-- Lista de Usuarios -->
+    <div class="card mt-3">
+        <div class="card-header bg-info text-white">
+            <h4>Usuarios Registrados</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Roles</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user["user"]</td>
+                            <td>
+                                @foreach (var role in user["roles"].AsBsonArray)
+                                {
+                                    <span class="badge bg-primary">@role["role"]</span>
+                                }
+                            </td>
+                            <td>
+                                <form method="post" asp-action="DeleteUser">
+                                    <input type="hidden" name="database" value="@ViewContext.HttpContext.Request.Query["database"]" />
+                                    <input type="hidden" name="username" value="@user["user"]" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Crear Nuevo Usuario -->
+    <div class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <h4>Nuevo Usuario</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateUser">
+                <input type="hidden" name="database" value="@ViewContext.HttpContext.Request.Query["database"]" />
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="username" placeholder="Nombre de usuario" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="password" class="form-control" name="password" placeholder="Contraseña" required>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="role" required>
+                            <option value="read">Lectura</option>
+                            <option value="readWrite">Escritura</option>
+                            <option value="dbAdmin">Administrador</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary">Crear</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
