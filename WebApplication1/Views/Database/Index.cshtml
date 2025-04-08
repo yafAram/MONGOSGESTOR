@@ -44,32 +44,89 @@
     </div>
 
     <!-- Gestión de Backups -->
+    <!-- Exportar / Importar Colecciones -->
     <div class="card mt-4">
-        <div class="card-header bg-warning">
-            <h4>Gestión de Backups</h4>
+        <div class="card-header bg-info text-white">
+            <h4>Backups</h4>
         </div>
         <div class="card-body">
             <div class="row">
+                <!-- EXPORTAR -->
                 <div class="col-md-6">
-                    <h5>Crear Backup</h5>
-                    <form asp-action="CreateBackup">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" name="databaseName"
-                                   placeholder="Nombre de la base de datos" required>
-                            <button type="submit" class="btn btn-dark">Generar</button>
+                    <h5>Exportar colección</h5>
+                    <form asp-action="Export" method="post">
+                        <div class="form-group">
+                            <label>Base de Datos:</label>
+                            <select id="databaseSelect" name="database" class="form-control" required>
+                                <option value="">Seleccione una base de datos</option>
+                                @foreach (var db in Model)
+                                {
+                                    <option value="@db">@db</option>
+                                }
+                            </select>
                         </div>
+
+                        <div class="form-group">
+                            <label>Colección:</label>
+                            <select id="collectionSelect" name="collection" class="form-control" required disabled>
+                                <option value="">Seleccione primero una base de datos</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-2">Exportar</button>
                     </form>
                 </div>
+
+                <!-- IMPORTAR -->
                 <div class="col-md-6">
-                    <h5>Restaurar Backup</h5>
-                    <form asp-action="RestoreBackup" method="post" enctype="multipart/form-data">
-                        <div class="input-group mb-3">
-                            <input type="file" class="form-control" name="backupFile" required>
-                            <button type="submit" class="btn btn-secondary">Restaurar</button>
+                    <h5>Importar colección</h5>
+                    <form asp-action="Import" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Base de Datos:</label>
+                            <select name="database" class="form-control" required>
+                                <option value="">Seleccione una base de datos</option>
+                                @foreach (var db in Model)
+                                {
+                                    <option value="@db">@db</option>
+                                }
+                            </select>
                         </div>
+
+                        <div class="form-group">
+                            <label>Nombre de Colección:</label>
+                            <input type="text" name="collection" class="form-control" required placeholder="Nombre de la colección destino" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Archivo JSON:</label>
+                            <input type="file" name="file" class="form-control-file" accept=".json" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-success mt-2">Importar</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('#databaseSelect').change(function () {
+                    var db = $(this).val();
+                    if (db) {
+                        $('#collectionSelect').prop('disabled', false);
+                        $.getJSON('/ExportImport/GetCollections?database=' + db, function (data) {
+                            var options = '<option value="">Seleccione una colección</option>';
+                            $.each(data, function (i, item) {
+                                options += '<option value="' + item + '">' + item + '</option>';
+                            });
+                            $('#collectionSelect').html(options);
+                        });
+                    } else {
+                        $('#collectionSelect').prop('disabled', true).html('<option value="">Seleccione primero una base de datos</option>');
+                    }
+                });
+            });
+        </script>
+    }

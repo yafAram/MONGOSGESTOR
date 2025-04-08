@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: AdminPassword123
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_backup:/data/backup
+
+  mongobackup:
+    image: tiredofit/db-backup
+    container_name: mongobackup
+    environment:
+      - DB_TYPE=mongo
+      - DB_HOST=mongodb
+      - DB_NAME=admin
+      - DB_USER=admin
+      - DB_PASS=AdminPassword123
+      - DB_DUMP_FREQ=1440
+      - DB_DUMP_BEGIN=0000
+      - DB_CLEANUP_TIME=8640
+    volumes:
+      - mongodb_backup:/backup
+    depends_on:
+      - mongodb
+
+  webapplication:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webapplication
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_backup:
+    driver: local

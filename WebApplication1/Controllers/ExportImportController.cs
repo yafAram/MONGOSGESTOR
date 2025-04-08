@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
@@ -7,39 +11,54 @@ namespace WebApplication1.Controllers
     public class ExportImportController : Controller
     {
         private readonly MongoDBService _mongoService;
+        private readonly IMongoClient _mongoClient;
 
-        public ExportImportController(MongoDBService mongoService)
+        public ExportImportController(MongoDBService mongoService, IMongoClient mongoClient)
         {
             _mongoService = mongoService;
+            _mongoClient = mongoClient;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var databaseNames = (await _mongoClient.ListDatabaseNamesAsync()).ToList();
+            return View(databaseNames);
         }
 
         [HttpPost]
         public async Task<IActionResult> Export(string database, string collection)
         {
-            await _mongoService.ExportCollectionAsync(database, collection);
-            return PhysicalFile($"./Exports/{collection}.json", "application/json", $"{collection}.json");
+            Directory.CreateDirectory($"/backup/{database}");
+
+            var outputPath = $"/backup/{database}/{collection}.json";
+            await _mongoService.ExportCollectionAsync(database, collection, outputPath);
+
+            return PhysicalFile(outputPath, "application/json", $"{collection}.json");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Import(string database, IFormFile file)
+        public async Task<IActionResult> Import(string database, string collection, IFormFile file)
         {
-            var filePath = Path.Combine("./Imports", file.FileName);
+            if (file == null || file.Length == 0)
+                return BadRequest("No se ha seleccionado archivo");
+
+            Directory.CreateDirectory("/backup/imports");
+            var filePath = Path.Combine("/backup/imports", file.FileName);
+
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            var process = new System.Diagnostics.Process
-            {
-                StartInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "mongoimport",
-                    Arguments = $"--db {database} --collection {Path.GetFileNameWithoutExtension(file.FileName)} --file {filePath}"
-                }
-            };
-            process.Start();
+            await _mongoService.ImportCollectionAsync(database, collection, filePath);
+            return RedirectToAction("Index");
+        }
 
-            return RedirectToAction("Index", "Database");
+        public async Task<IActionResult> GetCollections(string database)
+        {
+            var db = _mongoClient.GetDatabase(database);
+            var collections = await db.ListCollectionNamesAsync();
+            return Json(collections.ToList());
         }
     }
 }

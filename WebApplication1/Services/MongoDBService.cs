@@ -195,5 +195,95 @@ namespace WebApplication1.Services
                 throw;
             }
         }
+
+
+        public async Task ExportCollectionAsync(string databaseName, string collectionName, string exportPath)
+        {
+            try
+            {
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = "docker",
+                    Arguments = $"exec mongodb mongoexport " +
+                                $"--db {databaseName} " +
+                                $"--collection {collectionName} " +
+                                $"--authenticationDatabase admin " +
+                                $"-u admin " +
+                                $"-p adminpassword " +
+                                $"--out {exportPath} " +
+                                $"--jsonArray",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = new Process { StartInfo = processInfo };
+                process.Start();
+
+                var output = await process.StandardOutput.ReadToEndAsync();
+                var error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    _logger.LogError("Error en exportación: {Error}", error);
+                    throw new Exception($"Error en exportación: {error}");
+                }
+
+                _logger.LogInformation("Colección exportada a: {ExportPath}", exportPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al exportar colección");
+                throw;
+            }
+        }
+
+        public async Task ImportCollectionAsync(string databaseName, string collectionName, string filePath)
+        {
+            try
+            {
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = "docker",
+                    Arguments = $"exec -i mongodb mongoimport " +
+                                $"--db {databaseName} " +
+                                $"--collection {collectionName} " +
+                                $"--authenticationDatabase admin " +
+                                $"-u admin " +
+                                $"-p adminpassword " +
+                                $"--file {filePath} " +
+                                $"--jsonArray --drop",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = new Process { StartInfo = processInfo };
+                process.Start();
+
+                var output = await process.StandardOutput.ReadToEndAsync();
+                var error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    _logger.LogError("Error en importación: {Error}", error);
+                    throw new Exception($"Error en importación: {error}");
+                }
+
+                _logger.LogInformation("Colección importada desde: {FilePath}", filePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al importar colección");
+                throw;
+            }
+        }
+
+
+
     }
 }
