@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mongodb:
-    image: mongo:6.0
+    image: mongo:4.4
     container_name: mongodb
     ports:
       - "27017:27017"
@@ -12,6 +12,9 @@ services:
     volumes:
       - mongodb_data:/data/db
       - mongodb_backup:/data/backup
+    networks:
+      custom_network:
+        ipv4_address: 192.168.1.20
 
   mongobackup:
     image: tiredofit/db-backup
@@ -29,6 +32,8 @@ services:
       - mongodb_backup:/backup
     depends_on:
       - mongodb
+    networks:
+      - custom_network
 
   webapplication:
     build:
@@ -45,9 +50,16 @@ services:
       - mongodb_backup:/backup
     depends_on:
       - mongodb
+    networks:
+      - custom_network
+
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
 
 volumes:
   mongodb_data:
-    driver: local
   mongodb_backup:
-    driver: local
