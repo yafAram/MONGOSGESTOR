@@ -27,26 +27,25 @@ namespace WebApplication1.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> Export(string database)
         {
             try
             {
-                // Ruta corregida: usar /app/backups (dentro del contenedor webapplication)
-                var backupFolder = Path.Combine("/app/backups", database);
+                // Ruta CORREGIDA: usar el volumen compartido /backup
+                var backupFolder = Path.Combine("/backup", database, DateTime.Now.ToString("yyyy-MM-dd"));
                 Directory.CreateDirectory(backupFolder);
 
                 await _mongoService.ExportDatabaseAsync(database, backupFolder);
 
-                // Crear ZIP en /app/backups (no en /backup)
-                var zipPath = Path.Combine("/app/backups", $"{database}-backup.zip");
+                // Crear ZIP en el mismo volumen
+                var zipPath = Path.Combine("/backup", $"{database}-backup-{DateTime.Now:yyyyMMddHHmmss}.zip");
                 if (System.IO.File.Exists(zipPath))
                     System.IO.File.Delete(zipPath);
 
                 ZipFile.CreateFromDirectory(backupFolder, zipPath);
 
-                // Descargar el ZIP
+                // Descargar desde /backup
                 return PhysicalFile(zipPath, "application/zip", $"{database}.zip");
             }
             catch (Exception ex)

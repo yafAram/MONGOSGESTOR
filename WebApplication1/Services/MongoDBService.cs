@@ -1,6 +1,8 @@
 ﻿using MongoDB.Driver;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
+using System.IO.Compression;
 
 namespace WebApplication1.Services
 {
@@ -197,20 +199,18 @@ namespace WebApplication1.Services
         }
 
 
+        // En MongoDBService.cs
         public async Task ExportDatabaseAsync(string databaseName, string backupFolder)
         {
             try
             {
-                var backupPath = Path.Combine(backupFolder, DateTime.Now.ToString("yyyy-MM-dd"));
-
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "mongodump",
-                    // Conexión genérica + parámetros específicos
-                    Arguments = $"--uri=mongodb://admin:AdminPassword123@mongodb:27017/ " +  // Sin base de datos en la URI
-                                $"--authenticationDatabase=admin " +  // Autenticación contra 'admin'
-                                $"--db={databaseName} " +  // Usar = para parámetros
-                                $"--out={backupPath}",    // Usar = para parámetros
+                    Arguments = $"--uri=mongodb://admin:AdminPassword123@mongodb:27017/ " +
+                                $"--authenticationDatabase=admin " +
+                                $"--db={databaseName} " +
+                                $"--out={backupFolder}",  // Ahora usa directamente la ruta final
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -231,14 +231,16 @@ namespace WebApplication1.Services
                     throw new Exception($"Error en exportación: {error}");
                 }
 
-                _logger.LogInformation("Backup de {Database} creado en: {Folder}", databaseName, backupPath);
+                _logger.LogInformation("Backup de {Database} creado en: {Folder}", databaseName, backupFolder);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al exportar base de datos");
-                throw;
+                throw;  // Mantenemos el throw para manejar en el controlador
             }
         }
+
+       
 
         public async Task RestoreDatabaseAsync(string databaseName, string backupFolder)
         {
