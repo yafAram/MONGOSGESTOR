@@ -48,7 +48,7 @@ services:
       - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
     volumes:
       - dataprotection_keys:/root/.aspnet/DataProtection-Keys
-      - mongodb_backup:/backup  # Ruta modificada para consistencia
+      - mongodb_backup:/app/backups  # Ruta modificada para consistencia
     depends_on:
       - mongodb
     networks:
