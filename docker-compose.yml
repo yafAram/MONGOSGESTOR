@@ -11,22 +11,24 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: AdminPassword123
     volumes:
       - mongodb_data:/data/db
-      - mongodb_backup:/data/backup
     networks:
-      - mongo_network  # Conecta solo a la red de MongoDB
+      - mongo_network
 
   mongobackup:
     image: tiredofit/db-backup
     container_name: mongobackup
     environment:
       - DB_TYPE=mongo
-      - DB_HOST=mongodb  # Usa el nombre del servicio, no la IP
+      - DB_HOST=mongodb
       - DB_NAME=admin
       - DB_USER=admin
       - DB_PASS=AdminPassword123
       - DB_DUMP_FREQ=1440
       - DB_DUMP_BEGIN=0000
       - DB_CLEANUP_TIME=8640
+      - DB_DUMP_TARGET=directory       # Generar carpetas en lugar de archivos
+      - DB_DUMP_NAME=backup_%Y%m%d-%H%M%S  # Nombre único con fecha/hora
+      - DB_COMPRESSION=false           # Desactivar compresión
     volumes:
       - mongodb_backup:/backup
     depends_on:
@@ -46,18 +48,18 @@ services:
       - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
     volumes:
       - dataprotection_keys:/root/.aspnet/DataProtection-Keys
-      - mongodb_backup:/backup
+      - mongodb_backup:/backup  # Ruta modificada para consistencia
     depends_on:
       - mongodb
     networks:
       - mongo_network
 
 networks:
-  mongo_network:  # Nueva red con subred diferente
+  mongo_network:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.28.0.0/16  # Subred única para Docker
+        - subnet: 172.28.0.0/16
 
 volumes:
   mongodb_data:
