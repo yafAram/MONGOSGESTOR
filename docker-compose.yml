@@ -10,8 +10,25 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: AdminPassword123
     volumes:
-      - mongodb_data:/data/db
-      - ./backup:/backup  # 👈 Esto no es necesario aquí (solo en webapplication)
+      - mongodb_data:/data/db  # ✅ Solo volumen necesario para datos
+    networks:
+      - mongo_network
+
+  webapplication:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webapplication
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
+    volumes:
+      - dataprotection_keys:/app/keys
+      - mongodb_backup:/app/backups  # ✅ Ruta consistente para backups
+    depends_on:
+      - mongodb
     networks:
       - mongo_network
 
@@ -31,25 +48,7 @@ services:
       - DB_DUMP_NAME=backup_%Y%m%d-%H%M%S
       - DB_COMPRESSION=false
     volumes:
-      - mongodb_backup:/backup
-    depends_on:
-      - mongodb
-    networks:
-      - mongo_network
-
-  webapplication:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: webapplication
-    ports:
-      - "5000:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
-    volumes:
-      - dataprotection_keys:/app/keys  # 👈¡Cambio crítico aquí! 
-      - mongodb_backup:/app/backups
+      - mongodb_backup:/backup  # ✅ Mismo volumen con ruta estándar
     depends_on:
       - mongodb
     networks:
@@ -57,9 +56,9 @@ services:
 
 networks:
   mongo_network:
-    driver: bridge  # 👈 Elimina el ipam si no es estrictamente necesario
+    driver: bridge
 
 volumes:
   mongodb_data:
-  mongodb_backup:
-  dataprotection_keys:  # Ahora sí persiste en /app/keys
+  mongodb_backup:  # ✅ Volumen único para todos los backups
+  dataprotection_keys:

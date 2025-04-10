@@ -4,57 +4,97 @@
 }
 
 <div class="container mt-4">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
     <h2>@ViewData["Title"]</h2>
 
-    <!-- Lista de Usuarios -->
     <div class="card mt-3">
-        <!-- APARTADO 1: GESTIÓN DE BACKUPS (RESPALDO COMPLETO) -->
-        <div class="card mt-4">
-            <div class="card-header bg-info text-white">
-                <h4>Gestión de Backups (Respaldos Completos)</h4>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <!-- GENERAR BACKUP COMPLETO -->
-                    <div class="col-md-6">
-                        <h5>Generar Backup Completo</h5>
-                        <form asp-controller="Backup" asp-action="Export" method="post">
-                            <div class="form-group">
-                                <label>Base de Datos:</label>
-                                <select name="database" class="form-control" required>
-                                    <option value="">Seleccione una base de datos</option>
-                                    @foreach (var db in Model)
-                                    {
-                                        <option value="@db">@db</option> <!-- db es string, no BsonDocument -->
-                                    }
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-2">Generar Backup</button>
-                        </form>
+        <div class="card-header bg-info text-white">
+            <h4>Gestión de Backups</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Exportar -->
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Exportar Base de Datos
+                        </div>
+                        <div class="card-body">
+                            <form asp-controller="Backup" asp-action="Export" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label">Base de Datos:</label>
+                                    <select name="database" class="form-select" required>
+                                        <option value="">Seleccionar...</option>
+                                        @foreach (var db in Model)
+                                        {
+                                            <option value="@db">@db</option>
+                                        }
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100">
+                                    <i class="bi bi-download"></i> Generar Backup
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <!-- IMPORTAR BACKUP COMPLETO -->
-                    <div class="col-md-6">
-                        <h5>Importar Backup Completo</h5>
-                        <form asp-controller="Backup" asp-action="Import" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label>Base de Datos:</label>
-                                <select name="database" class="form-control" required>
-                                    <option value="">Seleccione una base de datos</option>
-                                    @foreach (var db in Model)
-                                    {
-                                        <option value="@db">@db</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Archivo ZIP:</label>
-                                <input type="file" name="file" class="form-control-file" accept=".zip" required />
-                            </div>
-                            <button type="submit" class="btn btn-success mt-2">Importar Backup</button>
-                        </form>
+                </div>
+
+                <!-- Importar -->
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-warning text-dark">
+                            Importar Backup
+                        </div>
+                        <div class="card-body">
+                            <form asp-controller="Backup" asp-action="Import" method="post" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label class="form-label">Base de Datos:</label>
+                                    <select name="database" class="form-select" required>
+                                        <option value="">Seleccionar...</option>
+                                        @foreach (var db in Model)
+                                        {
+                                            <option value="@db">@db</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Archivo ZIP:</label>
+                                    <input type="file" name="file" class="form-control" 
+                                           accept=".zip" required 
+                                           onchange="previewFile(this)" />
+                                    <div class="form-text">Solo archivos .zip generados por el sistema</div>
+                                </div>
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="bi bi-upload"></i> Restaurar Backup
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function previewFile(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Opcional: Previsualización del nombre
+                    console.log("Archivo seleccionado:", input.files[0].name);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

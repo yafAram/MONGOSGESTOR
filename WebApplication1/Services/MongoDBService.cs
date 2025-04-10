@@ -103,126 +103,110 @@ namespace WebApplication1.Services
         }
 
         // Método para restaurar un backup completo (desde una carpeta extraída)
+        public List<string> GetAvailableBackups(string databaseName)
+        {
+            var backupRoot = $"/app/backups/{databaseName}";
+            return Directory.GetDirectories(backupRoot)
+                           .Select(Path.GetFileName)
+                           .ToList();
+        }
+
         public async Task RestoreDatabaseAsync(string databaseName, string backupFolder)
         {
-            backupFolder = backupFolder.Replace("\\", "/");
-            try
+            var backupPath = $"/app/backups/{databaseName}/{backupFolder}";
+
+            var process = new Process
             {
-                var processInfo = new ProcessStartInfo
+                StartInfo = new ProcessStartInfo
                 {
                     FileName = "mongorestore",
-                    Arguments = $"--host mongodb --port 27017 --authenticationDatabase admin " +
-                                $"--authenticationMechanism SCRAM-SHA-1 -u admin -p AdminPassword123 " +
-                                $"--drop --nsInclude={databaseName}.* {backupFolder}",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var process = new Process { StartInfo = processInfo };
-                process.Start();
-                var output = await process.StandardOutput.ReadToEndAsync();
-                var error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-
-                if (process.ExitCode != 0)
-                {
-                    _logger.LogError("Error en restauración: {Error}", error);
-                    throw new Exception($"Error en restauración: {error}");
+                    Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
+                                $"--authenticationDatabase=admin --db={databaseName} --drop " +
+                                $"--dir={backupPath} --gzip",
+                    RedirectStandardError = true
                 }
+            };
 
-                _logger.LogInformation("Backup de {Database} restaurado desde: {Folder}", databaseName, backupFolder);
-            }
-            catch (Exception ex)
+            process.Start();
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode != 0)
             {
-                _logger.LogError(ex, "Error al restaurar backup");
-                throw;
+                throw new Exception(await process.StandardError.ReadToEndAsync());
             }
         }
 
 
         // Método para exportar datos de una colección (mongoexport)
-        public async Task ExportCollectionAsync(string databaseName, string collectionName)
+       
+
+        public async Task<string> ExportCollectionAsync(string databaseName, string collectionName)
         {
-            try
+            var backupDir = $"/app/backups/{databaseName}/{DateTime.Now:yyyyMMddHHmmss}";
+            Directory.CreateDirectory(backupDir);
+
+            var process = new Process
             {
-                var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-                var exportPath = $"/data/exports/{timestamp}_{collectionName}.json";
-
-                var processInfo = new ProcessStartInfo
+                StartInfo = new ProcessStartInfo
                 {
-                    FileName = "docker",
-                    Arguments = $"exec mongodb mongoexport --db {databaseName} " +
-                                $"--collection {collectionName} --authenticationDatabase admin " +
-                                $"-u admin -p adminpassword --out {exportPath} --jsonArray",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var process = new Process { StartInfo = processInfo };
-                process.Start();
-                var output = await process.StandardOutput.ReadToEndAsync();
-                var error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-                if (process.ExitCode != 0)
-                {
-                    _logger.LogError("Error en exportación de colección: {Error}", error);
-                    throw new Exception($"Error en exportación de colección: {error}");
+                    FileName = "mongodump",
+                    Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
+                                $"--db={databaseName} --collection={collectionName} " +
+                                $"--out={backupDir} --gzip --authenticationDatabase=admin",
+                    RedirectStandardError = true
                 }
-                _logger.LogInformation("Colección {Collection} exportada a: {Path}", collectionName, exportPath);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error en ExportCollectionAsync");
-                throw;
-            }
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+
+            if (process.ExitCode != 0)
+                throw new Exception(await process.StandardError.ReadToEndAsync());
+
+            // Comprimir resultado
+            var zipPath = $"{backupDir}.zip";
+            ZipFile.CreateFromDirectory(backupDir, zipPath);
+            Directory.Delete(backupDir, recursive: true);
+
+            return zipPath;
         }
 
-        // Método para importar datos a una colección (mongoimport)
         public async Task ImportCollectionAsync(string databaseName, string collectionName, IFormFile file)
         {
-            try
-            {
-                // Carpeta temporal para almacenar el archivo
-                var tempFolder = Path.Combine(Path.GetTempPath(), "mongo_import");
-                Directory.CreateDirectory(tempFolder);
-                var filePath = Path.Combine(tempFolder, file.FileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+            var tempDir = Path.GetTempFileName();
+            File.Delete(tempDir);
+            Directory.CreateDirectory(tempDir);
 
-                var processInfo = new ProcessStartInfo
-                {
-                    FileName = "docker",
-                    Arguments = $"exec mongodb mongoimport --db {databaseName} " +
-                                $"--collection {collectionName} --authenticationDatabase admin " +
-                                $"-u admin -p AdminPassword123 --file {filePath} --jsonArray --drop",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using var process = new Process { StartInfo = processInfo };
-                process.Start();
-                var output = await process.StandardOutput.ReadToEndAsync();
-                var error = await process.StandardError.ReadToEndAsync();
-                await process.WaitForExitAsync();
-                if (process.ExitCode != 0)
-                {
-                    _logger.LogError("Error en importación de colección: {Error}", error);
-                    throw new Exception($"Error en importación de colección: {error}");
-                }
-                _logger.LogInformation("Colección {Collection} importada correctamente", collectionName);
-            }
-            catch (Exception ex)
+            // Guardar y extraer ZIP
+            var zipPath = Path.Combine(tempDir, file.FileName);
+            using (var stream = new FileStream(zipPath, FileMode.Create))
+                await file.CopyToAsync(stream);
+            ZipFile.ExtractToDirectory(zipPath, tempDir);
+
+            var process = new Process
             {
-                _logger.LogError(ex, "Error en ImportCollectionAsync");
-                throw;
-            }
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "mongorestore",
+                    Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
+                                $"--db={databaseName} --collection={collectionName} " +
+                                $"--dir={tempDir}/{databaseName}/{collectionName} --gzip --drop " +
+                                "--authenticationDatabase=admin",
+                    RedirectStandardError = true
+                }
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+
+            Directory.Delete(tempDir, recursive: true);
+
+            if (process.ExitCode != 0)
+                throw new Exception(await process.StandardError.ReadToEndAsync());
         }
+
+
+
+
     }
 }

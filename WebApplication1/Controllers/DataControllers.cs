@@ -25,21 +25,34 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public async Task<IActionResult> ExportData(string database, string collection)
         {
-            // Llama al método de exportación de una colección
-            await _mongoService.ExportCollectionAsync(database, collection);
-            // Aquí debería implementarse la lógica para descargar el archivo exportado,
-            // o redirigir a una vista que permita visualizar el resultado.
-            return RedirectToAction("ExportacionImportacion");
+            try
+            {
+                var exportPath = await _mongoService.ExportCollectionAsync(database, collection);
+                var zipBytes = System.IO.File.ReadAllBytes(exportPath);
+                return File(zipBytes, "application/zip", $"{database}-{collection}-export.zip");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error al exportar: {ex.Message}";
+                return RedirectToAction("ExportacionImportacion");
+            }
         }
-
 
         [HttpPost]
         public async Task<IActionResult> ImportData(string database, string collection, IFormFile file)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No se ha seleccionado archivo");
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest("Archivo no válido");
 
-            await _mongoService.ImportCollectionAsync(database, collection, file);
+                await _mongoService.ImportCollectionAsync(database, collection, file);
+                TempData["Success"] = "Importación exitosa!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error al importar: {ex.Message}";
+            }
             return RedirectToAction("Index");
         }
     }
