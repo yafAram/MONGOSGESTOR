@@ -90,8 +90,7 @@
               "RelativeToolTip": "Controllers\\DataController.cs",
               "ViewState": "AgIAABUAAAAAAAAAAAAiwCcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T13:26:27.035Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-10T13:26:27.035Z"
             },
             {
               "$type": "Document",
@@ -101,7 +100,7 @@
               "RelativeDocumentMoniker": "Controllers\\BackupController.cs",
               "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\BackupController.cs",
               "RelativeToolTip": "Controllers\\BackupController.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAmwE8AAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAiwF0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T13:25:29.118Z",
               "EditorCaption": ""
@@ -128,8 +127,7 @@
               "RelativeToolTip": "Services\\SecurityService.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAgwDYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T05:16:01.917Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-08T05:16:01.917Z"
             },
             {
               "$type": "Document",
@@ -139,7 +137,7 @@
               "RelativeDocumentMoniker": "Services\\MongoDBService.cs",
               "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Services\\MongoDBService.cs",
               "RelativeToolTip": "Services\\MongoDBService.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAmwEsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAiwIkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-08T05:15:44.428Z",
               "EditorCaption": ""

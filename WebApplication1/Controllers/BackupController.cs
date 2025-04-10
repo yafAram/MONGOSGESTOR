@@ -17,8 +17,13 @@ namespace WebApplication1.Controllers
             _mongoService = mongoService;
         }
 
-        // Vista para backups (puedes usar una vista independiente o redirigir al Index general)
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+            return View("~/Views/Database/Index.cshtml");
+        }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> Export(string database)
