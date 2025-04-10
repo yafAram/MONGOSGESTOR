@@ -19,7 +19,7 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> Backups()
         {
-            var databases = await _mongoService.ListDatabasesAsync();
+            var databases = await _mongoService.ListDatabasesAsync(); // Devuelve List<string>
             return View(databases);
         }
 

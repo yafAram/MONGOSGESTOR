@@ -16,7 +16,7 @@ namespace WebApplication1.Controllers
 
         public async Task<IActionResult> ExportacionImportacion()
         {
-            var databases = await _mongoService.ListDatabasesAsync();
+            var databases = await _mongoService.ListDatabasesAsync(); // List<string>
             return View(databases);
         }
 

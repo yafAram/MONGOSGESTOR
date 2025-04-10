@@ -1,4 +1,4 @@
-﻿@model List<MongoDB.Bson.BsonDocument>
+﻿@model List<string> <!-- Cambiar a List<string> -->
 @{
     ViewData["Title"] = "BACKUPS";
 }
@@ -25,7 +25,7 @@
                                     <option value="">Seleccione una base de datos</option>
                                     @foreach (var db in Model)
                                     {
-                                        <option value="@db">@db</option>
+                                        <option value="@db">@db</option> <!-- db es string, no BsonDocument -->
                                     }
                                 </select>
                             </div>

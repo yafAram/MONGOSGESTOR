@@ -14,10 +14,11 @@ namespace WebApplication1.Controllers
             _mongoService = mongoService;
         }
 
+        // Ya está correcto. El método ListDatabasesAsync() devuelve List<string>
         public async Task<IActionResult> Index()
         {
             var databases = await _mongoService.ListDatabasesAsync();
-            return View(databases);
+            return View(databases); // List<string> -> Vista Index.cshtml (OK)
         }
 
         [HttpPost]
