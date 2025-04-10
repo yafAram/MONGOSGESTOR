@@ -17,7 +17,7 @@ namespace WebApplication1.Controllers
             _mongoService = mongoService;
         }
 
-        // Vista de respaldo (puedes personalizarla o redireccionar a Index de gestión de DB)
+        // Vista para backups (puedes usar una vista independiente o redirigir al Index general)
         public IActionResult Index() => View();
 
         [HttpPost]
@@ -25,14 +25,13 @@ namespace WebApplication1.Controllers
         {
             try
             {
-                // Se define la carpeta de backup en /backup/<database>/<fecha>
+                // Definir carpeta de backup en /backup/<database>/<fecha>
                 var backupFolder = Path.Combine("/backup", database, DateTime.Now.ToString("yyyy-MM-dd"));
                 Directory.CreateDirectory(backupFolder);
 
-                // Se ejecuta el backup completo de la base de datos
-                await _mongoService.ExportDatabaseAsync(database, backupFolder);
+                await _mongoService.CreateBackupAsync(database, backupFolder);
 
-                // Se crea un archivo ZIP con el contenido del backup
+                // Comprimir la carpeta de backup
                 var zipPath = Path.Combine("/backup", $"{database}-full-backup-{DateTime.Now:yyyyMMddHHmmss}.zip");
                 if (System.IO.File.Exists(zipPath))
                     System.IO.File.Delete(zipPath);
@@ -55,17 +54,18 @@ namespace WebApplication1.Controllers
                 if (file == null || file.Length == 0)
                     return BadRequest("No se ha seleccionado archivo");
 
-                // Definir carpeta base para la importación en /backup/imports (que debe estar en el volumen compartido)
+                // Definir carpeta base para la importación en /backup/imports
                 var importBaseFolder = "/backup/imports";
                 Directory.CreateDirectory(importBaseFolder);
 
+                // Guardar el archivo ZIP subido
                 var filePath = Path.Combine(importBaseFolder, file.FileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                // Extraer el ZIP a una carpeta temporal
+                // Extraer el ZIP en una carpeta temporal
                 var extractFolder = Path.Combine(importBaseFolder, Path.GetFileNameWithoutExtension(file.FileName));
                 if (Directory.Exists(extractFolder))
                     Directory.Delete(extractFolder, recursive: true);
@@ -74,7 +74,6 @@ namespace WebApplication1.Controllers
                 ZipFile.ExtractToDirectory(filePath, extractFolder);
                 extractFolder = extractFolder.Replace("\\", "/");
 
-                // Restaurar el backup completo
                 await _mongoService.RestoreDatabaseAsync(database, extractFolder);
                 return RedirectToAction("Index");
             }

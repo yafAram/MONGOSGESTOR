@@ -14,15 +14,15 @@ namespace WebApplication1.Controllers
             _mongoService = mongoService;
         }
 
-        // Vista para gestionar exportación e importación de datos
         public IActionResult Index() => View();
 
         [HttpPost]
         public async Task<IActionResult> ExportData(string database, string collection)
         {
-            // Llama al método de exportación de colección (ya existente en el servicio)
+            // Llama al método de exportación de una colección
             await _mongoService.ExportCollectionAsync(database, collection);
-            // Nota: Aquí se debería retornar o descargar el archivo exportado según esté implementado.
+            // Aquí debería implementarse la lógica para descargar el archivo exportado,
+            // o redirigir a una vista que permita visualizar el resultado.
             return RedirectToAction("Index");
         }
 
