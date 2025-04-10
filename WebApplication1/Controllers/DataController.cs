@@ -14,7 +14,13 @@ namespace WebApplication1.Controllers
             _mongoService = mongoService;
         }
 
-        public IActionResult Index() => View();
+        public async Task<IActionResult> ExportacionImportacion()
+        {
+            var databases = await _mongoService.ListDatabasesAsync();
+            return View(databases);
+        }
+
+
 
         [HttpPost]
         public async Task<IActionResult> ExportData(string database, string collection)
