@@ -37,17 +37,14 @@ namespace WebApplication1.Services
             try
             {
                 var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-                var backupPath = $"/data/backups/{timestamp}";
+                var backupPath = $"/backup/{databaseName}/{timestamp}";
+                Directory.CreateDirectory(backupPath); // Asegura que exista
 
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "docker",
-                    Arguments = $"exec mongodb mongodump " +
-                                $"--db {databaseName} " +
-                                $"--authenticationDatabase admin " +
-                                $"-u admin " +
-                                $"-p adminpassword " +
-                                $"--out {backupPath}",
+                    Arguments = $"exec mongodb mongodump --db {databaseName} " +
+                                $"--authenticationDatabase admin -u admin -p AdminPassword123 --out {backupPath}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -77,6 +74,7 @@ namespace WebApplication1.Services
             }
         }
 
+
         public async Task<List<string>> ListDatabasesAsync()
         {
             try
@@ -95,15 +93,15 @@ namespace WebApplication1.Services
         {
             try
             {
+                var fullPath = $"/backup/{backupName}";
+                if (!Directory.Exists(fullPath))
+                    throw new DirectoryNotFoundException($"No se encontró el directorio de backup: {fullPath}");
+
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "docker",
-                    Arguments = $"exec mongodb mongorestore " +
-                                $"--authenticationDatabase admin " +
-                                $"-u admin " +
-                                $"-p adminpassword " +
-                                $"--dir /data/backups/{backupName} " +
-                                $"--drop",
+                    Arguments = $"exec mongodb mongorestore --authenticationDatabase admin " +
+                                $"-u admin -p AdminPassword123 --drop {fullPath}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -132,6 +130,7 @@ namespace WebApplication1.Services
                 throw;
             }
         }
+
 
         public async Task ExportCollectionAsync(string databaseName, string collectionName)
         {
@@ -210,7 +209,7 @@ namespace WebApplication1.Services
                     Arguments = $"--uri=mongodb://admin:AdminPassword123@mongodb:27017/ " +
                                 $"--authenticationDatabase=admin " +
                                 $"--db={databaseName} " +
-                                $"--out={backupFolder}",  // Ahora usa directamente la ruta final
+                                $"--out={backupFolder}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -236,15 +235,14 @@ namespace WebApplication1.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al exportar base de datos");
-                throw;  // Mantenemos el throw para manejar en el controlador
+                throw;
             }
         }
 
-       
+
 
         public async Task RestoreDatabaseAsync(string databaseName, string backupFolder)
         {
-            // Aseguramos que la ruta use barras '/' (Linux)
             backupFolder = backupFolder.Replace("\\", "/");
             try
             {
@@ -265,10 +263,8 @@ namespace WebApplication1.Services
 
                 using var process = new Process { StartInfo = processInfo };
                 process.Start();
-
                 var output = await process.StandardOutput.ReadToEndAsync();
                 var error = await process.StandardError.ReadToEndAsync();
-
                 await process.WaitForExitAsync();
 
                 if (process.ExitCode != 0)
@@ -285,6 +281,7 @@ namespace WebApplication1.Services
                 throw;
             }
         }
+
 
 
 

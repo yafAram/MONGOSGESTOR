@@ -1,34 +1,24 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Threading.Tasks;
 using WebApplication1.Services;
 
 namespace WebApplication1.Controllers
 {
-    public class ExportImportController : Controller
+    public class BackupController : Controller
     {
         private readonly MongoDBService _mongoService;
-        private readonly IMongoClient _mongoClient;
 
-        public ExportImportController(MongoDBService mongoService, IMongoClient mongoClient)
+        public BackupController(MongoDBService mongoService)
         {
             _mongoService = mongoService;
-            _mongoClient = mongoClient;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var databaseNames = (await _mongoClient.ListDatabaseNamesAsync()).ToList();
-            return View(databaseNames);
-        }
-
-
-
-
+        // Vista de respaldo (puedes personalizarla o redireccionar a Index de gestión de DB)
+        public IActionResult Index() => View();
 
         [HttpPost]
         public async Task<IActionResult> Export(string database)
@@ -39,25 +29,23 @@ namespace WebApplication1.Controllers
                 var backupFolder = Path.Combine("/backup", database, DateTime.Now.ToString("yyyy-MM-dd"));
                 Directory.CreateDirectory(backupFolder);
 
+                // Se ejecuta el backup completo de la base de datos
                 await _mongoService.ExportDatabaseAsync(database, backupFolder);
 
-                // Crear archivo ZIP a partir del backup (en /backup)
-                var zipPath = Path.Combine("/backup", $"{database}-backup-{DateTime.Now:yyyyMMddHHmmss}.zip");
+                // Se crea un archivo ZIP con el contenido del backup
+                var zipPath = Path.Combine("/backup", $"{database}-full-backup-{DateTime.Now:yyyyMMddHHmmss}.zip");
                 if (System.IO.File.Exists(zipPath))
                     System.IO.File.Delete(zipPath);
 
                 ZipFile.CreateFromDirectory(backupFolder, zipPath);
 
-                return PhysicalFile(zipPath, "application/zip", $"{database}.zip");
+                return PhysicalFile(zipPath, "application/zip", $"{database}-full-backup.zip");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error: {ex.Message}");
+                return StatusCode(500, $"Error en generación de backup: {ex.Message}");
             }
         }
-
-
-
 
         [HttpPost]
         public async Task<IActionResult> Import(string database, IFormFile file)
@@ -67,7 +55,7 @@ namespace WebApplication1.Controllers
                 if (file == null || file.Length == 0)
                     return BadRequest("No se ha seleccionado archivo");
 
-                // Definir carpeta base para la importación en /backup/imports (usando el mismo volumen)
+                // Definir carpeta base para la importación en /backup/imports (que debe estar en el volumen compartido)
                 var importBaseFolder = "/backup/imports";
                 Directory.CreateDirectory(importBaseFolder);
 
@@ -77,33 +65,23 @@ namespace WebApplication1.Controllers
                     await file.CopyToAsync(stream);
                 }
 
-                // Carpeta de extracción (por ejemplo, /backup/imports/{nombreDelZipSinExt})
+                // Extraer el ZIP a una carpeta temporal
                 var extractFolder = Path.Combine(importBaseFolder, Path.GetFileNameWithoutExtension(file.FileName));
                 if (Directory.Exists(extractFolder))
                     Directory.Delete(extractFolder, recursive: true);
                 Directory.CreateDirectory(extractFolder);
 
                 ZipFile.ExtractToDirectory(filePath, extractFolder);
-
                 extractFolder = extractFolder.Replace("\\", "/");
 
+                // Restaurar el backup completo
                 await _mongoService.RestoreDatabaseAsync(database, extractFolder);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al importar: {ex.Message}");
+                return StatusCode(500, $"Error al importar backup: {ex.Message}");
             }
-        }
-
-
-
-
-        public async Task<IActionResult> GetCollections(string database)
-        {
-            var db = _mongoClient.GetDatabase(database);
-            var collections = await db.ListCollectionNamesAsync();
-            return Json(collections.ToList());
         }
     }
 }

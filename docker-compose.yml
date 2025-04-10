@@ -11,6 +11,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: AdminPassword123
     volumes:
       - mongodb_data:/data/db
+      - ./backup:/backup
+
     networks:
       - mongo_network
 
@@ -48,7 +50,7 @@ services:
       - MongoDB__ConnectionString=mongodb://admin:AdminPassword123@mongodb:27017/admin
     volumes:
       - dataprotection_keys:/root/.aspnet/DataProtection-Keys
-      - mongodb_backup:/app/backups  # Ruta modificada para consistencia
+      - mongodb_backup:/backup    # Se monta en /backup, consistente con el resto
     depends_on:
       - mongodb
     networks:
