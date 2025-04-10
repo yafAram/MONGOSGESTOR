@@ -17,10 +17,8 @@ namespace WebApplication1.Controllers
             _mongoService = mongoService;
         }
 
-        public IActionResult Index()
-        {
-            return View("~/Views/Database/Index.cshtml");
-        }
+        public IActionResult Index() => View();
+
 
 
 
