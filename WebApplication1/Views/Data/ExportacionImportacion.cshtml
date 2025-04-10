@@ -54,9 +54,13 @@
                             <label>Colección:</label>
                             <input type="text" name="collection" class="form-control" placeholder="Nombre de la colección" required />
                         </div>
+                        <!-- En el formulario de importación -->
                         <div class="form-group">
-                            <label>Archivo CSV (o JSON):</label>
-                            <input type="file" name="file" class="form-control-file" accept=".csv, .json" required />
+                            <label>Archivo ZIP (contiene JSON/CSV):</label>
+                            <input type="file" name="file" class="form-control-file" accept=".zip" required />
+                            <small class="form-text text-muted">
+                                Sube un ZIP generado por la exportación (contiene un JSON/CSV interno).
+                            </small>
                         </div>
                         <button type="submit" class="btn btn-dark mt-2">Importar Datos</button>
                     </form>
