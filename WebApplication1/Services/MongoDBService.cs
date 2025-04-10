@@ -83,18 +83,23 @@ namespace WebApplication1.Services
         }
 
 
+
+
+
         public async Task<List<string>> ListDatabasesAsync()
         {
-            try
+            var databases = new List<string>();
+            using (var cursor = await _client.ListDatabaseNamesAsync())
             {
-                var databases = await _client.ListDatabaseNamesAsync();
-                return databases.ToList();
+                while (await cursor.MoveNextAsync())
+                {
+                    foreach (var db in cursor.Current)
+                    {
+                        databases.Add(db); // db es el nombre (string) de la BD
+                    }
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al listar bases de datos");
-                throw;
-            }
+            return databases;
         }
 
         // Método para restaurar un backup completo (desde una carpeta extraída)
