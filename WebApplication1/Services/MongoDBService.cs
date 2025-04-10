@@ -40,45 +40,41 @@ namespace WebApplication1.Services
         {
             try
             {
-                // Asegurarse de que exista la carpeta de backup
                 Directory.CreateDirectory(backupFolder);
 
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = "mongodump",
-                    Arguments = $"--host mongodb --port 27017 --db {databaseName} --authenticationDatabase admin -u admin -p AdminPassword123 --out {backupFolder}",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    Arguments = $"--host=mongodb --db={databaseName} " +  //  Host sin puerto explícito
+                              $"--username=admin --password=AdminPassword123 --authenticationDatabase=admin " +  // ✅ Parámetros en formato largo
+                              $"--out={backupFolder} --gzip",  //  Compresión habilitada
+                    RedirectStandardError = true,  //  Solo necesitamos capturar errores
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
 
                 using var process = new Process { StartInfo = processInfo };
                 process.Start();
-                var output = await process.StandardOutput.ReadToEndAsync();
+
                 var error = await process.StandardError.ReadToEndAsync();
                 await process.WaitForExitAsync();
 
                 if (process.ExitCode != 0)
-                {
-                    _logger.LogError("Error en backup: {Error}", error);
-                    throw new Exception($"Error en backup: {error}");
-                }
+                    throw new Exception($"mongodump error: {error}");
 
                 _logger.LogInformation("Backup de {Database} creado en: {Path}", databaseName, backupFolder);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error en CreateBackupAsync (sobrecarga con backupFolder)");
+                _logger.LogError(ex, "Error en CreateBackupAsync");
                 throw;
             }
         }
 
-
-        // Sobrecarga para cuando no se especifique la carpeta, se genera una automáticamente
+        // Sobrecarga mejorada
         public async Task CreateBackupAsync(string databaseName)
         {
-            var backupFolder = $"/backup/{databaseName}/{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+            var backupFolder = $"/app/backups/{databaseName}/{DateTime.Now:yyyyMMddHHmmss}";  //  Ruta dentro del volumen
             await CreateBackupAsync(databaseName, backupFolder);
         }
 
@@ -113,16 +109,14 @@ namespace WebApplication1.Services
 
         public async Task RestoreDatabaseAsync(string databaseName, string backupFolder)
         {
-            var backupPath = $"/app/backups/{databaseName}/{backupFolder}";
-
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "mongorestore",
-                    Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
-                                $"--authenticationDatabase=admin --db={databaseName} --drop " +
-                                $"--dir={backupPath} --gzip",
+                    Arguments = $"--host=mongodb -u admin -p AdminPassword123 " +
+                                $"--authenticationDatabase admin --db={databaseName} " +
+                                $"--dir={backupFolder} --gzip --drop",
                     RedirectStandardError = true
                 }
             };

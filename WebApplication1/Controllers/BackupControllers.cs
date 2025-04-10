@@ -32,13 +32,13 @@ namespace WebApplication1.Controllers
             try
             {
                 // Definir carpeta de backup en /backup/<database>/<fecha>
-                var backupFolder = Path.Combine("/backup", database, DateTime.Now.ToString("yyyy-MM-dd"));
-                Directory.CreateDirectory(backupFolder);
+                // En BackupController.Export
+                var backupFolder = Path.Combine("/app/backups", database, DateTime.Now.ToString("yyyy-MM-dd"));
 
                 await _mongoService.CreateBackupAsync(database, backupFolder);
 
                 // Comprimir la carpeta de backup
-                var zipPath = Path.Combine("/backup", $"{database}-full-backup-{DateTime.Now:yyyyMMddHHmmss}.zip");
+                var zipPath = Path.Combine("/app/backups", $"{database}-full-backup-{DateTime.Now:yyyyMMddHHmmss}.zip"); Directory.CreateDirectory(backupFolder);
                 if (System.IO.File.Exists(zipPath))
                     System.IO.File.Delete(zipPath);
 
@@ -63,7 +63,7 @@ namespace WebApplication1.Controllers
                     return BadRequest("No se ha seleccionado archivo");
 
                 // Definir carpeta base para la importación en /backup/imports
-                var importBaseFolder = "/backup/imports";
+                var importBaseFolder = "/app/backups/imports";
                 Directory.CreateDirectory(importBaseFolder);
 
                 // Guardar el archivo ZIP subido
@@ -90,7 +90,7 @@ namespace WebApplication1.Controllers
                 }
 
                 await _mongoService.RestoreDatabaseAsync(database, extractFolder);
-                return RedirectToAction("Index");
+                return RedirectToAction("Backups");
             }
             catch (Exception ex)
             {

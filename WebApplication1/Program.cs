@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.DataProtection;
+锘縰sing Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -6,15 +6,15 @@ using WebApplication1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Configuraci髇 b醩ica
+// 1. Configuraci贸n b谩sica
 builder.Services.AddControllersWithViews();
 
-// 2. Configuraci髇 Data Protection
+// 2. Configuraci贸n Data Protection
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo("/app/keys"))
     .SetApplicationName("MongoSGestor");
 
-// 3. Configuraci髇 MongoDB segura
+// 3. Configuraci贸n MongoDB segura
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
 
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
@@ -33,7 +33,7 @@ builder.Services.AddLogging(logging =>
 
 var app = builder.Build();
 
-// Validaci髇 de configuraci髇 al inicio
+// Validaci贸n de configuraci贸n al inicio
 var mongoSettings = app.Services.GetRequiredService<IOptions<MongoDBSettings>>().Value;
 try
 {
@@ -42,11 +42,11 @@ try
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogCritical(ex, "Configuraci髇 de MongoDB inv醠ida");
+    logger.LogCritical(ex, "Configuraci贸n de MongoDB inv谩lida");
     throw;
 }
 
-// 5. Configuraci髇 del pipeline
+// 5. Configuraci贸n del pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -78,7 +78,7 @@ app.MapControllerRoute(
 
 app.Run();
 
-// Clase de configuraci髇 (mantener igual)
+// Clase de configuraci贸n (mantener igual)
 public class MongoDBSettings
 {
     public required string ConnectionString { get; set; }
@@ -89,6 +89,6 @@ public class MongoDBSettings
             throw new ArgumentNullException(nameof(ConnectionString));
 
         if (!ConnectionString.Contains("mongodb://") && !ConnectionString.Contains("mongodb+srv://"))
-            throw new ArgumentException("Formato de cadena de conexi髇 inv醠ido");
+            throw new ArgumentException("Formato de cadena de conexi贸n inv谩lido");
     }
 }
