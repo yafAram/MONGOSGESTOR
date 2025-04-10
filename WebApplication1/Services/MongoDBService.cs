@@ -132,21 +132,24 @@ namespace WebApplication1.Services
 
 
         // Método para exportar datos de una colección (mongoexport)
-       
+
 
         public async Task<string> ExportCollectionAsync(string databaseName, string collectionName)
         {
             var backupDir = $"/app/backups/{databaseName}/{DateTime.Now:yyyyMMddHHmmss}";
             Directory.CreateDirectory(backupDir);
 
+            // Generar archivo JSON
+            var jsonFile = Path.Combine(backupDir, $"{collectionName}.json");
+
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "mongodump",
+                    FileName = "mongoexport",
                     Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
                                 $"--db={databaseName} --collection={collectionName} " +
-                                $"--out={backupDir} --gzip --authenticationDatabase=admin",
+                                $"--authenticationDatabase=admin --jsonArray --out={jsonFile}",
                     RedirectStandardError = true
                 }
             };
@@ -157,7 +160,7 @@ namespace WebApplication1.Services
             if (process.ExitCode != 0)
                 throw new Exception(await process.StandardError.ReadToEndAsync());
 
-            // Comprimir resultado
+            // Comprimir solo el JSON
             var zipPath = $"{backupDir}.zip";
             ZipFile.CreateFromDirectory(backupDir, zipPath);
             Directory.Delete(backupDir, recursive: true);
@@ -167,36 +170,44 @@ namespace WebApplication1.Services
 
         public async Task ImportCollectionAsync(string databaseName, string collectionName, IFormFile file)
         {
-            var tempDir = Path.GetTempFileName();
-            File.Delete(tempDir);
+            var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempDir);
 
-            // Guardar y extraer ZIP
-            var zipPath = Path.Combine(tempDir, file.FileName);
-            using (var stream = new FileStream(zipPath, FileMode.Create))
-                await file.CopyToAsync(stream);
-            ZipFile.ExtractToDirectory(zipPath, tempDir);
-
-            var process = new Process
+            try
             {
-                StartInfo = new ProcessStartInfo
+                // Guardar y extraer ZIP
+                var zipPath = Path.Combine(tempDir, file.FileName);
+                using (var stream = new FileStream(zipPath, FileMode.Create))
+                    await file.CopyToAsync(stream);
+                ZipFile.ExtractToDirectory(zipPath, tempDir);
+
+                // Buscar el archivo JSON/CSV
+                var jsonFile = Directory.GetFiles(tempDir, "*.json", SearchOption.AllDirectories).FirstOrDefault();
+                if (jsonFile == null)
+                    throw new FileNotFoundException("No se encontró archivo JSON en el ZIP");
+
+                var process = new Process
                 {
-                    FileName = "mongorestore",
-                    Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
-                                $"--db={databaseName} --collection={collectionName} " +
-                                $"--dir={tempDir}/{databaseName}/{collectionName} --gzip --drop " +
-                                "--authenticationDatabase=admin",
-                    RedirectStandardError = true
-                }
-            };
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "mongoimport",
+                        Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
+                                    $"--db={databaseName} --collection={collectionName} " +
+                                    $"--authenticationDatabase=admin --jsonArray --drop --file={jsonFile}",
+                        RedirectStandardError = true
+                    }
+                };
 
-            process.Start();
-            await process.WaitForExitAsync();
+                process.Start();
+                await process.WaitForExitAsync();
 
-            Directory.Delete(tempDir, recursive: true);
-
-            if (process.ExitCode != 0)
-                throw new Exception(await process.StandardError.ReadToEndAsync());
+                if (process.ExitCode != 0)
+                    throw new Exception(await process.StandardError.ReadToEndAsync());
+            }
+            finally
+            {
+                Directory.Delete(tempDir, recursive: true);
+            }
         }
 
 
