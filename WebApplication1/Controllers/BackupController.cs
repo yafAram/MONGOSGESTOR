@@ -46,6 +46,8 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> Import(string database, IFormFile file)
         {
@@ -74,6 +76,13 @@ namespace WebApplication1.Controllers
                 ZipFile.ExtractToDirectory(filePath, extractFolder);
                 extractFolder = extractFolder.Replace("\\", "/");
 
+                // Si la estructura extraída contiene una carpeta con el nombre de la BD, se ajusta la ruta
+                var subFolder = Path.Combine(extractFolder, database);
+                if (Directory.Exists(subFolder))
+                {
+                    extractFolder = subFolder.Replace("\\", "/");
+                }
+
                 await _mongoService.RestoreDatabaseAsync(database, extractFolder);
                 return RedirectToAction("Index");
             }
@@ -82,5 +91,9 @@ namespace WebApplication1.Controllers
                 return StatusCode(500, $"Error al importar backup: {ex.Message}");
             }
         }
+
+
+
+
     }
 }

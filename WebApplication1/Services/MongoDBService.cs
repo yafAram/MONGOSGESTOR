@@ -105,8 +105,8 @@ namespace WebApplication1.Services
             {
                 var processInfo = new ProcessStartInfo
                 {
-                    FileName = "docker",
-                    Arguments = $"exec mongodb mongorestore --authenticationDatabase admin " +
+                    FileName = "mongorestore",
+                    Arguments = $"--host mongodb --port 27017 --authenticationDatabase admin " +
                                 $"--authenticationMechanism SCRAM-SHA-1 -u admin -p AdminPassword123 " +
                                 $"--drop --nsInclude={databaseName}.* {backupFolder}",
                     RedirectStandardOutput = true,
@@ -135,6 +135,7 @@ namespace WebApplication1.Services
                 throw;
             }
         }
+
 
         // Método para exportar datos de una colección (mongoexport)
         public async Task ExportCollectionAsync(string databaseName, string collectionName)
