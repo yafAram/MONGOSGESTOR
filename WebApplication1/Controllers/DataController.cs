@@ -29,8 +29,9 @@ namespace WebApplication1.Controllers
             await _mongoService.ExportCollectionAsync(database, collection);
             // Aquí debería implementarse la lógica para descargar el archivo exportado,
             // o redirigir a una vista que permita visualizar el resultado.
-            return RedirectToAction("Index");
+            return RedirectToAction("ExportacionImportacion");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ImportData(string database, string collection, IFormFile file)

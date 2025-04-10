@@ -24,7 +24,7 @@
                                 <option value="">Seleccione una base de datos</option>
                                 @foreach (var db in Model)
                                 {
-                                    <option value="@db">@db</option>
+                                    <option value="@db["name"]">@db["name"]</option>
                                 }
                             </select>
                         </div>
