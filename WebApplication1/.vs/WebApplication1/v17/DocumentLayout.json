@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\database\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\database\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\data\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\data\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\backup\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\backup\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\security\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\security\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\controllers\\backupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:controllers\\backupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -23,10 +39,6 @@
       "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\database\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\database\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -45,10 +57,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\views\\security\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|solutionrelative:views\\security\\users.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2F32BD65-A608-4BFF-B65A-F058C70B1EDE}|WebApplication1.csproj|c:\\users\\empan\\onedrive\\escritorio\\webapplication1\\mongosgestor\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -78,23 +86,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "DataController.cs",
-              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\DataController.cs",
-              "RelativeDocumentMoniker": "Controllers\\DataController.cs",
-              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\DataController.cs",
-              "RelativeToolTip": "Controllers\\DataController.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAAiwCcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T13:26:27.035Z"
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Data\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Data\\Index.cshtml",
+              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Data\\Index.cshtml",
+              "RelativeToolTip": "Views\\Data\\Index.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAD8AAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-10T16:00:04.735Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Backup\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Backup\\Index.cshtml",
+              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Backup\\Index.cshtml",
+              "RelativeToolTip": "Views\\Backup\\Index.cshtml",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAmwDIAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-10T15:58:05.535Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "BackupController.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\BackupController.cs",
               "RelativeDocumentMoniker": "Controllers\\BackupController.cs",
@@ -107,32 +129,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MongoDBService.cs",
-              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Services\\MongoDBService.cs",
-              "RelativeDocumentMoniker": "Services\\MongoDBService.cs",
-              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Services\\MongoDBService.cs",
-              "RelativeToolTip": "Services\\MongoDBService.cs",
-              "ViewState": "AgIAAHcAAAAAAAAAAAAiwIQAAAANAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-08T05:15:44.428Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-08T22:25:40.925Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "SecurityService.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Services\\SecurityService.cs",
               "RelativeDocumentMoniker": "Services\\SecurityService.cs",
@@ -144,19 +141,69 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
+              "Title": "Users.cshtml",
+              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Security\\Users.cshtml",
+              "RelativeDocumentMoniker": "Views\\Security\\Users.cshtml",
+              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Security\\Users.cshtml",
+              "RelativeToolTip": "Views\\Security\\Users.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEwAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-08T05:17:40.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Database\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Database\\Index.cshtml",
               "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Database\\Index.cshtml",
               "RelativeToolTip": "Views\\Database\\Index.cshtml",
-              "ViewState": "AgIAAIMAAAAAAAAAAAAmwJYAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADEAAAAAAAAAAAAAAD8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-08T05:16:16.941Z"
+              "WhenOpened": "2025-04-08T05:16:16.941Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 9,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-04-08T22:25:40.925Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MongoDBService.cs",
+              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Services\\MongoDBService.cs",
+              "RelativeDocumentMoniker": "Services\\MongoDBService.cs",
+              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Services\\MongoDBService.cs",
+              "RelativeToolTip": "Services\\MongoDBService.cs",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAiwIQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-08T05:15:44.428Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DataController.cs",
+              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\DataController.cs",
+              "RelativeDocumentMoniker": "Controllers\\DataController.cs",
+              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\DataController.cs",
+              "RelativeToolTip": "Controllers\\DataController.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAiwCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T13:26:27.035Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Home\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
@@ -168,7 +215,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -180,7 +227,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "Privacy.cshtml",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Home\\Privacy.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\Privacy.cshtml",
@@ -192,19 +239,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Users.cshtml",
-              "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Security\\Users.cshtml",
-              "RelativeDocumentMoniker": "Views\\Security\\Users.cshtml",
-              "ToolTip": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\Security\\Users.cshtml",
-              "RelativeToolTip": "Views\\Security\\Users.cshtml",
-              "ViewState": "AgIAADEAAAAAAAAAAAAkwEwAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-04-08T05:17:40.633Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "_ViewImports.cshtml",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\_ViewImports.cshtml",
               "RelativeDocumentMoniker": "Views\\_ViewImports.cshtml",
@@ -216,7 +251,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 11,
               "Title": "_ViewStart.cshtml",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Views\\_ViewStart.cshtml",
               "RelativeDocumentMoniker": "Views\\_ViewStart.cshtml",
@@ -228,7 +263,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -240,7 +275,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "ErrorViewModel.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Models\\ErrorViewModel.cs",
               "RelativeDocumentMoniker": "Models\\ErrorViewModel.cs",
@@ -252,7 +287,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "SecurityController.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\SecurityController.cs",
               "RelativeDocumentMoniker": "Controllers\\SecurityController.cs",
@@ -264,7 +299,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
@@ -276,7 +311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "DatabaseControllers.cs",
               "DocumentMoniker": "C:\\Users\\empan\\OneDrive\\Escritorio\\WebApplication1\\MONGOSGESTOR\\WebApplication1\\Controllers\\DatabaseControllers.cs",
               "RelativeDocumentMoniker": "Controllers\\DatabaseControllers.cs",
