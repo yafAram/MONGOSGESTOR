@@ -45,10 +45,8 @@ namespace WebApplication1.Services
 
                 var processInfo = new ProcessStartInfo
                 {
-                    FileName = "docker",
-                    // Se usa el backupFolder pasado como parámetro para la salida
-                    Arguments = $"exec mongodb mongodump --db {databaseName} " +
-                                $"--authenticationDatabase admin -u admin -p AdminPassword123 --out {backupFolder}",
+                    FileName = "mongodump",
+                    Arguments = $"--host mongodb --port 27017 --db {databaseName} --authenticationDatabase admin -u admin -p AdminPassword123 --out {backupFolder}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -75,6 +73,7 @@ namespace WebApplication1.Services
                 throw;
             }
         }
+
 
         // Sobrecarga para cuando no se especifique la carpeta, se genera una automáticamente
         public async Task CreateBackupAsync(string databaseName)
