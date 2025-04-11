@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // 1. Configuración básica
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<SecurityService>();
 
 // 2. Configuración Data Protection
 builder.Services.AddDataProtection()
@@ -67,6 +68,7 @@ else
     });
     app.UseHsts();
 }
+
 
 app.UseStaticFiles();
 app.UseRouting();

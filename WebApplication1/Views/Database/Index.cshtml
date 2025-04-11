@@ -19,13 +19,19 @@
                         @db
                         <div>
                             <a href="/Security/Users?database=@db" class="btn btn-sm btn-info">Usuarios</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+                            <!-- Formulario para eliminar la base de datos -->
+                            @using (Html.BeginForm("DeleteDatabase", "Security", FormMethod.Post, new { onsubmit = "return confirm('¿Está seguro de eliminar la base de datos?');", @class = "d-inline" }))
+                            {
+                                @Html.Hidden("databaseName", db)
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                            }
                         </div>
                     </li>
                 }
             </ul>
         </div>
     </div>
+
 
     <!-- CREAR NUEVA BASE DE DATOS -->
     <div class="card mt-4">

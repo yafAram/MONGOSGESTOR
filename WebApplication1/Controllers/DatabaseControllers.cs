@@ -42,6 +42,30 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDatabase(string databaseName)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(databaseName))
+                {
+                    TempData["Error"] = "Debe especificar el nombre de la base de datos a eliminar";
+                    return RedirectToAction("Index");
+                }
+
+                await _mongoService.DeleteDatabaseAsync(databaseName);
+                TempData["Success"] = $"La base de datos '{databaseName}' ha sido eliminada exitosamente!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error al eliminar la base de datos: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> CreateBackup(string databaseName)
         {

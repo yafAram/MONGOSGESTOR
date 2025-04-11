@@ -168,6 +168,24 @@ namespace WebApplication1.Services
             return zipPath;
         }
 
+
+
+        public async Task DeleteDatabaseAsync(string databaseName)
+        {
+            try
+            {
+                // El método DropDatabaseAsync elimina la base de datos indicada.
+                await _client.DropDatabaseAsync(databaseName);
+                _logger.LogInformation("Base de datos {Database} eliminada", databaseName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar la base de datos {Database}", databaseName);
+                throw;
+            }
+        }
+
+
         public async Task ImportCollectionAsync(string databaseName, string collectionName, IFormFile file)
         {
             var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
