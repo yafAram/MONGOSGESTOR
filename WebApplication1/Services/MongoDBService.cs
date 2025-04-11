@@ -160,12 +160,8 @@ namespace WebApplication1.Services
             if (process.ExitCode != 0)
                 throw new Exception(await process.StandardError.ReadToEndAsync());
 
-            // Comprimir solo el JSON
-            var zipPath = $"{backupDir}.zip";
-            ZipFile.CreateFromDirectory(backupDir, zipPath);
-            Directory.Delete(backupDir, recursive: true);
 
-            return zipPath;
+            return backupDir;
         }
 
 
@@ -193,16 +189,10 @@ namespace WebApplication1.Services
 
             try
             {
-                // Guardar y extraer ZIP
-                var zipPath = Path.Combine(tempDir, file.FileName);
-                using (var stream = new FileStream(zipPath, FileMode.Create))
+                // Guardar directamente el archivo JSON
+                var jsonPath = Path.Combine(tempDir, file.FileName);
+                using (var stream = new FileStream(jsonPath, FileMode.Create))
                     await file.CopyToAsync(stream);
-                ZipFile.ExtractToDirectory(zipPath, tempDir);
-
-                // Buscar el archivo JSON/CSV
-                var jsonFile = Directory.GetFiles(tempDir, "*.json", SearchOption.AllDirectories).FirstOrDefault();
-                if (jsonFile == null)
-                    throw new FileNotFoundException("No se encontró archivo JSON en el ZIP");
 
                 var process = new Process
                 {
@@ -211,7 +201,7 @@ namespace WebApplication1.Services
                         FileName = "mongoimport",
                         Arguments = $"--host=mongodb --username=admin --password=AdminPassword123 " +
                                     $"--db={databaseName} --collection={collectionName} " +
-                                    $"--authenticationDatabase=admin --jsonArray --drop --file={jsonFile}",
+                                    $"--authenticationDatabase=admin --jsonArray --drop --file={jsonPath}",
                         RedirectStandardError = true
                     }
                 };
@@ -227,7 +217,6 @@ namespace WebApplication1.Services
                 Directory.Delete(tempDir, recursive: true);
             }
         }
-
 
 
 

@@ -38,6 +38,9 @@ namespace WebApplication1.Controllers
             }
         }
 
+
+
+
         [HttpPost]
         public async Task<IActionResult> ImportData(string database, string collection, IFormFile file)
         {
@@ -53,7 +56,7 @@ namespace WebApplication1.Controllers
             {
                 TempData["Error"] = $"Error al importar: {ex.Message}";
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("ExportacionImportacion");
         }
     }
 }
